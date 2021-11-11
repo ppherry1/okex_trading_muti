@@ -15,7 +15,7 @@ class Account:
     def __init__(self, account_info, base_b='USDT'):
         # account_info包含apiKey, secret, passphrase, config, id, password。condig是策略配置。
         # apiKey, secret, passphrase是API，id是注册账户的邮箱或手机号(站内转账用)，password是资金密码
-        self.exchange_name = 'OKEX'
+        self.exchange_name = 'OKEXbinance'
         self.exchange = ccxt.okex({'password': account_info['passphrase'],
                                    'timeout': 3000,
                                    'rateLimit': 10,
