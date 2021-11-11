@@ -1,0 +1,83 @@
+1.在capital_allocate_main.py配置母账户/资金策略/运行周期，在capital_config配置钉钉，即可运行。参数如涉及币种，需大写，如'USDT'。
+
+2.在各策略文件夹配置各自策略的必须配置。
+
+3.资金策略可独立运行，也随其他策略运行。
+如需随其他策略运行，则在其他策略自定义位置（如头部或尾部）放置如下代码：
+import capital_allocate_main
+capital_allocate_main.capital_allocate_main()
+如上括号中可配置参数，例如：
+{'allocate_types': ['cta', 'autoinvest', 'infnet'], 'strategy_name': 'allocate_random', 'strategy_para':['USDT', 1.0]}
+如不配置参数，则按默认配置执行。
+
+4.暂时只支持择时策略（cta），定投策略（autoinvest），无限时间网格（infnet），如果需要新增其他类型的策略，需遵循以下规则：
+各种策略需要打包放到okex_trading_muti根目录下，必须有Config文件。
+各种策略Config文件须有运行策略的子账户配置和策略配置。格式如下：
+运行策略的子账户配置：
+api_dict = {
+    'son1': {                     # 这里必须是真实的账户名称（即登录用的ID号），目前无限时间网格和定投策略只能使用一个子账号
+        'apiKey': "670aad81-",
+        'secret': "",
+    },
+     'son2': {
+         'apiKey': "4132cbd7-",
+         'secret': "",
+     },
+}
+
+OKEX_CONFIG_dict = {}
+HOST_NAME = 'okex.com'
+for account_name in api_dict.keys():
+    OKEX_CONFIG_dict[account_name] = {
+        'password': '',
+        'timeout': exchange_timeout,
+        'rateLimit': 10,
+        'hostname': HOST_NAME,  # 无法fq的时候启用
+        'enableRateLimit': False}
+    OKEX_CONFIG_dict[account_name]['apiKey'] = api_dict[account_name]['apiKey']
+    OKEX_CONFIG_dict[account_name]['secret'] = api_dict[account_name]['secret']
+
+策略配置：
+symbol_config_dict = {
+    'son1': {
+        'symbol_config':
+            {
+                'XXX-USDT': {'instrument_id': 'XXX-USDT',  # 必有配置
+                             'xxx': ,
+                             'xxx': ,
+                             'xxx': ,
+                             'xxx': ,
+                             },
+                'XXX-USDT': {'instrument_id': 'XXX-USDT',  # 必有配置
+                             'xxx': ,
+                             'xxx': ,
+                             'xxx': ,
+                             'xxx': ,
+                             },
+            },
+        'XX': 'XX',
+    },
+    'son1': {
+        'symbol_config':
+            {
+                'XXX-USDT': {'instrument_id': 'XXX-USDT',  # 必有配置
+                             'xxx': ,
+                             'xxx': ,
+                             'xxx': ,
+                             'xxx': ,
+                             },
+                'XXX-USDT': {'instrument_id': 'XXX-USDT',  # 必有配置
+                             'xxx': ,
+                             'xxx': ,
+                             'xxx': ,
+                             'xxx': ,
+                             },
+            },
+        'XX': 'XX',
+    },
+}
+
+其他说明事项：
+1.目前各策略只能使用子账户，不能使用母账户。各种资金的划转，只使用母账户的资金账户。
+2.目前未写资金曲线计算函数，所以还不支持和资金曲线有关的资金策略。
+3.目前母账户余额不足暂时没有钉钉提示。
